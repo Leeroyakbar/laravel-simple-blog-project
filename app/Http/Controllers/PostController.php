@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Routing\Matcher\ExpressionLanguageProvider;
 
 class PostController extends Controller
 {
@@ -53,7 +54,21 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        return view('posts.show');
+        $posts = Storage::get('posts.txt');
+        $posts = explode("\n", $posts);
+        $selectedPost = Array();
+
+        foreach($posts as $post){
+            $post = explode(',', $post);
+            if($post[0] == $id){
+                $selectedPost = $post;
+            }
+        }
+
+        $viewData = [
+            'post' => $selectedPost
+        ];
+        return view('posts.show', $viewData);
     }
 
     /**
